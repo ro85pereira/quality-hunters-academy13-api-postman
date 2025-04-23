@@ -46,11 +46,11 @@ Antes de executar os testes, certifique-se de que você tem os seguintes requisi
 - Quality Hunters
 
 ## 👩‍💻 Tech Lead
-- Cleberson Osório
-- Nara Cyntia
+- [Cleberson Osório](https://github.com/clestonv)
+- [Nara Cyntia](https://github.com/naracyntia)
 
 ## 👑 Líder
-- Raphaela Teada
+- [Raphaela Teada](https://github.com/Rapha3la)
 
 ## 👨‍💻 Equipe
 - [Andreza Menezes Veloso Pipolo](https://github.com/andrezapipolo)
