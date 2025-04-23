@@ -21,7 +21,7 @@ jobs:
 
     environment:
       name: github-pages
-      url: https://github.com/ro85pereira/quality-hunters-academy13-api-postman/report.html
+      url: https://ro85pereira.github.io/quality-hunters-academy13-api-postman/report.html
       
     # Etapas a serem realizadas
     steps:
