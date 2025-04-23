@@ -1,0 +1,2261 @@
+{
+	"info": {
+		"_postman_id": "d944185e-f607-46bc-b6a8-798e711fc522",
+		"name": "TQA13-QualityHunters",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38100241"
+	},
+	"item": [
+		{
+			"name": "Usuário",
+			"item": [
+				{
+					"name": "Login Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"TOKENADM\", pm.response.json().token);\r",
+									"\r",
+									"pm.test(\"Status test\", function () { pm.response.to.have.status(200)});\r",
+									"\r",
+									"pm.test(\"Check token is true\", function () {\r",
+									"   pm.expect(pm.response.json().token).to.exist;\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Sucess message validation\", function () {\r",
+									"    pm.expect(pm.response.json().msg).to.include(\"autenticação autorizada com sucesso!\");\r",
+									"  });\r",
+									"\r",
+									"  const capturarValorJson = pm.response.json().token;\r",
+									"pm.environment.set(\"TOKENADM\",capturarValorJson);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"mail\": \"sysadmin@qacoders.com\",\r\n  \"password\": \"1234@Test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/login",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Não criar usuário campo nome vazio",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENADM}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"fullName\":\"\",\r\n  \"mail\": \"{{email}}\",\r\n  \"password\": \"123@Teste\",\r\n  \"accessProfile\": \"ADMIN\",\r\n  \"cpf\": \"{{cpf}}\",\r\n  \"confirmPassword\": \"123@Teste\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/user/",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"user",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Não criar usuário sem sobrenome",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verificar mensagem de erro\", () => {\r",
+									"    pm.expect(pm.response.json().error[0]).to.be.eql(\"Informe o nome e sobrenome com as iniciais em letra maiúscula e sem caracteres especiais.\");\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENADM}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"fullName\":\"Rodrigo\",\r\n  \"mail\": \"{{email}}\",\r\n  \"password\": \"123@Teste\",\r\n  \"accessProfile\": \"ADMIN\",\r\n  \"cpf\": \"{{cpf}\",\r\n  \"confirmPassword\": \"123@Teste\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/user/",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"user",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Não criar usuário campo nome com números",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verificar mensagem de erro\", function () {\r",
+									"    pm.expect(pm.response.json().error[0]).to.be.eql(\"O campo nome completo não deve conter números\");\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENADM}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullName\": \"Rodrigo 4\",\r\n    \"mail\": \"{{email}}\",\r\n    \"password\": \"123@Teste\",\r\n    \"accessProfile\": \"ADMIN\",\r\n    \"cpf\": \"{{cpf}}\",\r\n    \"confirmPassword\": \"123@Teste\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/user/",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"user",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Não criar usuário campo email vazio",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENADM}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullName\": \"Rodrigo Dartanhan\",\r\n    \"mail\": \"\",\r\n    \"password\": \"123@Teste\",\r\n    \"accessProfile\": \"ADMIN\",\r\n    \"cpf\": \"{{cpf}}\",\r\n    \"confirmPassword\": \"123@Teste\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/user/",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"user",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Não criar usuário sem CPF",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verificar mensagem de erro\", function () {\r",
+									"    pm.expect(pm.response.json().error).to.be.eql([\"O campo CPF é obrigatório!\"]);\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENADM}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullName\": \"Rodrigo Nina Junior\",\r\n    \"mail\": \"nina@bol.com.br\",\r\n    \"password\": \"123@Teste\",\r\n    \"accessProfile\": \"ADMIN\",\r\n    \"cpf\": \"\",\r\n    \"confirmPassword\": \"123@Teste\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/user/",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"user",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Não criar usuário sem senha",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verificar mensagem de erro\", function () {\r",
+									"    pm.expect(pm.response.json().error).to.be.eql([\"O campo senha é obrigatório\",\r",
+									"        \"O campo de confirmação de senha é obrigatório.\"]);\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENADM}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullName\": \"Rodrigo Nina Junior\",\r\n    \"mail\": \"nina@bol.com.br\",\r\n    \"password\": \"\",\r\n    \"accessProfile\": \"ADMIN\",\r\n    \"cpf\": \"33304711965\",\r\n    \"confirmPassword\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/user/",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"user",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Não criar usuário senha menor que padrão",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verificar mensagem de erro\", function () {\r",
+									"    pm.expect(pm.response.json().error).to.be.eql([\"Senha precisa ter: uma letra maiúscula, uma letra minúscula, um número, um caractere especial(@#$%) e tamanho entre 8-12.\"]);\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENADM}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullName\": \"Rodrigo Nina Junior\",\r\n    \"mail\": \"nina@bol.com.br\",\r\n    \"password\": \"s\",\r\n    \"accessProfile\": \"ADMIN\",\r\n    \"cpf\": \"33304711965\",\r\n    \"confirmPassword\": \"s\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/user/",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"user",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Não criar usuário senha sem caractere especial",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verificar mensagem de erro\", function () {\r",
+									"    pm.expect(pm.response.json().error).to.be.eql([\"Senha precisa ter: uma letra maiúscula, uma letra minúscula, um número, um caractere especial(@#$%) e tamanho entre 8-12.\"]);\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENADM}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullName\": \"Rodrigo Nina Junior\",\r\n    \"mail\": \"nina@bol.com.br\",\r\n    \"password\": \"senha12345A\",\r\n    \"accessProfile\": \"ADMIN\",\r\n    \"cpf\": \"33304711965\",\r\n    \"confirmPassword\": \"senha12345A\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/user/",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"user",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Não criar usuário senha maior que permitido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verificar mensagem de erro\", function () {\r",
+									"    pm.expect(pm.response.json().error).to.be.eql([\"Senha precisa ter: uma letra maiúscula, uma letra minúscula, um número, um caractere especial(@#$%) e tamanho entre 8-12.\"]);\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENADM}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullName\": \"Rodrigo Nina Junior\",\r\n    \"mail\": \"nina2@bol.com.br\",\r\n    \"password\": \"senha1#23457890416877865\",\r\n    \"accessProfile\": \"ADMIN\",\r\n    \"cpf\": \"33304711967\",\r\n    \"confirmPassword\": \"senha1#23457890416877865\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/user/",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"user",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Não realizar login sem email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Renamed variable to a unique name\r",
+									"const capturarValorJsonToken = pm.response.json().token;\r",
+									"pm.environment.set(\"TOKENUSUARIO\", capturarValorJsonToken);\r",
+									"\r",
+									"pm.test(\"Status test\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Message validation\", function(){\r",
+									"    pm.expect(pm.response.json().mail).to.eql(\"O campo e-mail é obrigatório.\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"mail\": \"\",\r\n  \"password\": \"{{password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/login",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Não realizar login sem senha",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Renamed variable to a unique name\r",
+									"const capturarValorJsonToken = pm.response.json().token;\r",
+									"pm.environment.set(\"TOKENUSUARIO\", capturarValorJsonToken);\r",
+									"\r",
+									"pm.test(\"Status test\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Message validation\", function(){\r",
+									"    pm.expect(pm.response.json().password).to.eql(\"O campo senha é obrigatório.\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"mail\": \"{{mail}}\",\r\n  \"password\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/login",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Criar usuário com sucesso",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function firstname() {\r",
+									"    const names = ['Don', 'Mimi', 'Sofiana', 'Joao', 'Eleno', 'Beatriz','Al','Aline', 'Miguelito', 'Sophiana', 'Artur', 'Heleno', 'Bedo','Alice', 'Miguel', 'Sophia', 'Arthur', 'Helena', 'Bernardo', 'Valentina', 'Heitor', 'Laura', 'Davi', 'Isabella', 'Lorenzo', 'Manuela', 'Theo', 'Luiza', 'Pedro', 'Giovanna', 'Gabriel', 'Julia'];\r",
+									"    \r",
+									"    const randomName = names[Math.floor(Math.random() * names.length)]\r",
+									"    return randomName\r",
+									"}\r",
+									"pm.environment.set(\"FirstName\", firstname())\r",
+									"\r",
+									"function lastname() {\r",
+									"    const lastnames = ['Silvaneis', 'Santi', 'Olivierie', 'Sousa', 'Rodriguez', 'Al', 'Limanes', 'Ferreiro', 'Per', 'Carvalhes', 'Goncalvez', 'Ribeira', 'Costas', 'Arauzo', 'Marte', 'Fernandez','Silva', 'Santos', 'Oliveira', 'Souza', 'Rodrigues', 'Almeida', 'Lima', 'Ferreira', 'Pereira', 'Carvalho', 'Goncalves', 'Ribeiro', 'Costa', 'Araujo', 'Martins', 'Fernandes'];\r",
+									"\r",
+									"    const randomLastName = lastnames[Math.floor(Math.random() * lastnames.length)]\r",
+									"    return randomLastName\r",
+									"}\r",
+									"pm.environment.set(\"LastName\", lastname())\r",
+									"\r",
+									"pm.environment.set(\"fullName\", \r",
+									"    pm.environment.get(\"FirstName\") + \" \" + pm.environment.get(\"LastName\"))\r",
+									"\r",
+									"pm.environment.set(\"mail\", pm.environment.get(\"fullName\").toLowerCase().replace(/\\s/g, \"\").normalize(\"NFD\").replace(/[\\u0300-\\u036f]/g, \"\") + '@qacoders.com.br')\r",
+									"\r",
+									"function randomCPF() {\r",
+									"    let randomCPF = '';\r",
+									"   \r",
+									"    for (let i = 0; i < 11; i++) {\r",
+									"        randomCPF += Math.floor(Math.random() * 10).toString();\r",
+									"    }\r",
+									"    return randomCPF;\r",
+									"}\r",
+									"pm.environment.set(\"cpf\", randomCPF());\r",
+									"\r",
+									"function generatePassword() {\r",
+									"    const chars = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%\";\r",
+									"    const comprimentoMinimo = 8;\r",
+									"    const comprimentoMaximo = 12;\r",
+									"    let senhaArray = [];\r",
+									" \r",
+									"    senhaArray.push(chars[Math.floor(Math.random() * 26)]); \r",
+									"    senhaArray.push(chars[26 + Math.floor(Math.random() * 26)]); \r",
+									"    senhaArray.push(chars[52 + Math.floor(Math.random() * 10)]); \r",
+									"    senhaArray.push(chars[62 + Math.floor(Math.random() * 4)]); \r",
+									"    \r",
+									"    const comprimentoRestante = Math.max(comprimentoMinimo - senhaArray.length, comprimentoMaximo - senhaArray.length);\r",
+									"    \r",
+									"    for (let i = 0; i < comprimentoRestante; i++) {\r",
+									"        senhaArray.push(chars[Math.floor(Math.random() * chars.length)]);\r",
+									"    }\r",
+									"    return shuffleString(senhaArray.join(\"\"));\r",
+									"}\r",
+									"\r",
+									"function shuffleString(string) {\r",
+									"  return string.split(\"\").sort(() => Math.random() - 0.5).join(\"\");\r",
+									"}\r",
+									"pm.environment.set(\"password\", generatePassword());\r",
+									"\r",
+									"\r",
+									"\r",
+									" "
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verificar mensagem de criação\", function () {\r",
+									"    const Message = pm.response.json().msg;\r",
+									"    pm.expect(Message).to.include(\"cadastro realizado com sucesso.\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENADM}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"fullName\": \"{{fullName}}\",\r\n  \"mail\": \"{{mail}}\",\r\n  \"accessProfile\": \"ADMIN\",\r\n  \"cpf\": \"{{cpf}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"confirmPassword\": \"{{password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/user",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login usuário",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Renamed variable to a unique name\r",
+									"const capturarValorJsonToken = pm.response.json().token;\r",
+									"pm.environment.set(\"TOKENUSUARIO\", capturarValorJsonToken);\r",
+									"\r",
+									"pm.test(\"Status test\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check if token exist\", function () {\r",
+									"   pm.expect(pm.response.json().token).to.exist;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Sucess message validation\", function () {\r",
+									"    pm.expect(pm.response.json().msg).to.include(\"autenticação autorizada com sucesso!\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"mail\": \"{{mail}}\",\r\n  \"password\": \"{{password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/login",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar usuário",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENADM}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/user/",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"user",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Editar nome e email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\",function (){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Message validation\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Dados atualizados com sucesso\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Mail Validation\", function () {\r",
+									"    const emailDigitado = pm.environment.get(\"mail\");\r",
+									"    pm.expect(pm.response.json().updatedUser.mail).to.eql(emailDigitado);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Name validation\", function(){\r",
+									"    const nomeDigitado = pm.environment.get(\"fullname\");\r",
+									"    pm.expect(pm.response.json().updatedUser.fullName).to.eql(nomeDigitado);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function randomUserName(){\r",
+									"    const names = ['Marte Souza','Maximus Sassa','Paulo Paulada Jr','Jobson Weskley Segundo','Lucas Lucas tres','Sal Lu','Maximus Romas','Paulo To Paulada','Jobson Weskley JR','Lucas Lucas Dois','Salazar Luks','Maximus Roma','Paulo Paulada','Jobson Weskley','Lucas Lucas'];\r",
+									"    const randomName = names[Math.floor(Math.random()*names.length)]\r",
+									"    return randomName;\r",
+									"}\r",
+									"pm.environment.set(\"fullname\",randomUserName());\r",
+									"\r",
+									"function randomUserEmail(){\r",
+									"    const email = ['email001@dominio.com','usuario002@provedor.br','teste003@servico.net','alfa004@site.org','beta005@meuemail.info',\r",
+									"'nome006@outrodominio.com','exemplo007@qualquer.com.br','unico008@emailaleatorio.net','final009@provedor.org','inicio010@servico.info',\r",
+									"'random011@dominio.com','gerado012@provedor.br','novo013@servico.net','existe014@site.org','maisum015@meuemail.info',\r",
+									"'trinta016@outrodominio.com','agora017@qualquer.com.br','vai018@emailaleatorio.net','assim019@provedor.org','fimdaprimeira020@servico.info',\r",
+									"'ummaisum021@dominio.com','segundoteste022@provedor.br','terceiroemail023@servico.net','quartoalfa024@site.org','quintobeta025@meuemail.info',\r",
+									"'sextonome026@outrodominio.com','setimoexemplo027@qualquer.com.br','oitavounico028@emailaleatorio.net','nonofinal029@provedor.org','decimoinicio030@servico.info',\r",
+									"'randommais031@dominio.com','geradoteste032@provedor.br','novomais033@servico.net','existentemais034@site.org','maisumteste035@meuemail.info',\r",
+									"'trintamais036@outrodominio.com','agorateste037@qualquer.com.br','vaimais038@emailaleatorio.net','assimteste039@provedor.org','fimsegunda040@servico.info',\r",
+									"'ummaisdois041@dominio.com','segundotesteum042@provedor.br','terceiroemaildois043@servico.net','quartoalfaatres044@site.org','quintobetacinco045@meuemail.info',\r",
+									"'sextonomequatro046@outrodominio.com','setimoexemploSeis047@qualquer.com.br','oitavounicosete048@emailaleatorio.net','nonofinaloito049@provedor.org','decimoinicionove050@servico.info','email051@dominio.com','usuario052@provedor.br','teste053@servico.net','alfa054@site.org','beta055@meuemail.info',\r",
+									"'nome056@outrodominio.com','exemplo057@qualquer.com.br','unico058@emailaleatorio.net','final059@provedor.org','inicio060@servico.info',\r",
+									"'random061@dominio.com','gerado062@provedor.br','novo063@servico.net','existe064@site.org','maisum065@meuemail.info',\r",
+									"'trinta066@outrodominio.com','agora067@qualquer.com.br','vai068@emailaleatorio.net','assim069@provedor.org','fimterceira070@servico.info',\r",
+									"'ummaisum071@dominio.com','segundoteste072@provedor.br','terceiroemail073@servico.net','quartoalfa074@site.org','quintobeta075@meuemail.info',\r",
+									"'sextonomesete076@outrodominio.com','setimoexemplooito077@qualquer.com.br','oitavouniconove078@emailaleatorio.net','nonofinaldez079@provedor.org','decimoinicioum080@servico.info',\r",
+									"'randommaisdois081@dominio.com','geradotrestres082@provedor.br','novomaisquatro083@servico.net','existentemaiscinco084@site.org','maisumtesteseis085@meuemail.info',\r",
+									"'trintamaissete086@outrodominio.com','agoratesteoito087@qualquer.com.br','vaimaisnove088@emailaleatorio.net','assimtestedeze089@provedor.org','fimquarta090@servico.info',\r",
+									"'ummaisdoisum091@dominio.com','segundotestedois092@provedor.br','terceiroemailtres093@servico.net','quartoalfacinco094@site.org','quintobetasete095@meuemail.info',\r",
+									"'sextonomeoito096@outrodominio.com','setimoexemplonove097@qualquer.com.br','oitavounicodez098@emailaleatorio.net','nonofinalum099@provedor.org','decimoiniciodois100@servico.info','email101@dominio.com','usuario102@provedor.br','teste103@servico.net','alfa104@site.org','beta105@meuemail.info',\r",
+									"'nome106@outrodominio.com','exemplo107@qualquer.com.br','unico108@emailaleatorio.net','final109@provedor.org','inicio110@servico.info',\r",
+									"'random111@dominio.com','gerado112@provedor.br','novo113@servico.net','existe114@site.org','maisum115@meuemail.info',\r",
+									"'trinta116@outrodominio.com','agora117@qualquer.com.br','vai118@emailaleatorio.net','assim119@provedor.org','fimquinta120@servico.info',\r",
+									"'ummaisum121@dominio.com','segundoteste122@provedor.br','terceiroemail123@servico.net','quartoalfa124@site.org','quintobeta125@meuemail.info',\r",
+									"'sextonomeonze126@outrodominio.com','setimoexemplodoze127@qualquer.com.br','oitavounicotreze128@emailaleatorio.net','nonofinalquatorze129@provedor.org','decimoinicioquinze130@servico.info',\r",
+									"'randommaissese131@dominio.com','geradotestesete132@provedor.br','novomaisoito133@servico.net','existentemaisnove134@site.org','maisumtestedeze135@meuemail.info',\r",
+									"'trintamaisonze136@outrodominio.com','agoratestedoze137@qualquer.com.br','vaimaisquatorze138@emailaleatorio.net','assimtestequinze139@provedor.org','fimsexta140@servico.info',\r",
+									"'ummaisdozeum141@dominio.com','segundotestedoze142@provedor.br','terceiroemailtreze143@servico.net','quartoalfaquinze144@site.org','quintobetasete145@meuemail.info',\r",
+									"'sextonomeoito146@outrodominio.com','setimoexemplonove147@qualquer.com.br','oitavounicovinte148@emailaleatorio.net','nonofinalumquatro9@provedor.org','decimoiniciodois150@servico.info'];\r",
+									"    const randomEmail = email[Math.floor(Math.random()*email.length)]\r",
+									"    return randomEmail;\r",
+									"}\r",
+									"pm.environment.set(\"mail\",randomUserEmail());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{TOKENUSUARIO}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"fullName\": \"{{fullname}}\",\r\n  \"mail\": \"{{mail}}\" \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/user/6798371fe270333a9a038f5a",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"6798371fe270333a9a038f5a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Editar password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Sucess message validation\", function(){\r",
+									"    pm.expect(pm.response.json().msg).to.be.eql(\"Senha atualizada com sucesso!\")\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generatePassword() {\r",
+									"    const chars = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%\";\r",
+									"    const comprimentoMinimo = 8;\r",
+									"    const comprimentoMaximo = 12;\r",
+									"    let senhaArray = [];\r",
+									" \r",
+									"    senhaArray.push(chars[Math.floor(Math.random() * 26)]); \r",
+									"    senhaArray.push(chars[26 + Math.floor(Math.random() * 26)]); \r",
+									"    senhaArray.push(chars[52 + Math.floor(Math.random() * 10)]); \r",
+									"    senhaArray.push(chars[62 + Math.floor(Math.random() * 4)]); \r",
+									"    \r",
+									"    const comprimentoRestante = Math.max(comprimentoMinimo - senhaArray.length, comprimentoMaximo - senhaArray.length);\r",
+									"    \r",
+									"    for (let i = 0; i < comprimentoRestante; i++) {\r",
+									"        senhaArray.push(chars[Math.floor(Math.random() * chars.length)]);\r",
+									"    }\r",
+									"    return shuffleString(senhaArray.join(\"\"));\r",
+									"}\r",
+									"\r",
+									"function shuffleString(string) {\r",
+									"  return string.split(\"\").sort(() => Math.random() - 0.5).join(\"\");\r",
+									"}\r",
+									"pm.environment.set(\"password\", generatePassword());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{TOKENUSUARIO}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"password\": \"{{password}}\",\r\n  \"confirmPassword\": \"{{password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/user/password/6798371fe270333a9a038f5a",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"password",
+								"6798371fe270333a9a038f5a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Editar status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status validation\", function (){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Message validation\", function(){\r",
+									"    pm.expect(pm.response.json().msg).to.eql(\"Status do usuario atualizado com sucesso para status true.\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENADM}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"status\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/user/status/6798371fe270333a9a038f5a",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"status",
+								"6798371fe270333a9a038f5a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Não editar senha não coincidem",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status Validation\", function () {\r",
+									"     pm.expect(pm.response.code).to.equal(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Message validation no permission\", function(){\r",
+									"    pm.expect(pm.response.json().error).to.be.an('array');\r",
+									"    pm.expect(pm.response.json().error).to.include(\"As senhas não conferem.\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENUSUARIO}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"password\": \"{{password}}\",\r\n  \"confirmPassword\": \"1237@Test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/user/password/6798371fe270333a9a038f5a",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"password",
+								"6798371fe270333a9a038f5a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Não editar senha já utilizado",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status validation\", function(){\r",
+									"     pm.response.to.have.status(409);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verificar mensagem de sucesso\", function(){\r",
+									"    pm.expect(pm.response.json().msg).to.be.eql(\"Essa senha já foi utilizada anteriormente. Por favor, escolha uma nova senha.\")\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENUSUARIO}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"password\": \"{{password}}\",\r\n  \"confirmPassword\": \"{{password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/user/password/6798371fe270333a9a038f5a",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"password",
+								"6798371fe270333a9a038f5a"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Empresa",
+			"item": [
+				{
+					"name": "Criar empresa",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function randomCorporateName() {\r",
+									"    const names = ['Peixes Arts', 'Ilha Peixes', 'Nina Veterinario', 'Nina Dogs', 'Nina dog', 'Cats Toys', 'Nina Festas', 'Compra sim', 'Company Nino', 'Ilha Company', 'Nina Arts', 'Ilha Loja', 'Nina Sassa', 'Compra Dogs', 'Dog Show', 'Cats Dogss', 'Nina Eletro', 'Compra Compra', 'Company Vendas', 'Dudu Company', 'Dudu Sasssa', 'Compras On', 'Salazar Company', 'IlhaRetiro Company', 'Lele Eletro', 'Compra Aki'];\r",
+									"    const randomName = names[Math.floor(Math.random() * names.length)];\r",
+									"    return randomName;\r",
+									"}\r",
+									"pm.environment.set(\"corporateName\", randomCorporateName());\r",
+									"\r",
+									"function randomCNPJ() {\r",
+									"    let randomCNPJ = '';\r",
+									"    for (let i = 0; i < 14; i++) {\r",
+									"        randomCNPJ += Math.floor(Math.random() * 10).toString();\r",
+									"    }\r",
+									"    return randomCNPJ;\r",
+									"}\r",
+									"pm.environment.set(\"registerCompany\", randomCNPJ());\r",
+									"\r",
+									"function randomUserEmail() {\r",
+									"    const email = ['ee@hotmail.com.br', 'ree@bol.com.br', 'quae@ponto.com.br', 'bbae@boa.com.br', 'sasa2ae@gmail.com', 'dudu_onlinE2ae@ji.com.br', 'saae@ig.com.br', 'salaaae@hotmail.com.br', 'retiae@bol.com.br', 'quebsaae@ponto.com.br', 'boaebaa@boa.com.br', 'sasaae@gmail.com', 'dudu_onlineaaae@ji.com.br', '1aa@hotmail.com.br', 'rea@bol.com.br', 'qua@ponto.com.br', 'bba@boa.com.br', 'sasa2a@gmail.com', 'dudu_onlinE2a@ji.com.br', 'saa@ig.com.br', 'salaaa@hotmail.com.br', 'retia@bol.com.br', 'quebsaa@ponto.com.br', 'boabaa@boa.com.br', 'sasaa@gmail.com', 'dudu_onlineaaa@ji.com.br', 'sab@ig.com.br', 'sa1b@hotmail.com.br', 're1b@bol.com.br', 'qu1b@ponto.com.br', 'bb1b@boa.com.br', 'sasa1b@gmail.com', 'dudu_onlinE1b@ji.com.br', 'sa1b@ig.com.br', 'sala1b@hotmail.com.br', 'reti1b@bol.com.br', 'quebsb@ponto.com.br', 'boabb@boa.com.br', 'sasac@gmail.com', 'dudu_onlinec@ji.com.br', 'sac@ig.com.br', 'sacc@hotmail.com.br', 'rec@bol.com.br', 'quc@ponto.com.br', 'bbc@boa.com.br', 'sasacc2@gmail.com', 'dudu_onlinE2c@ji.com.br', 'sa@ig.com.br', 'sala@hotmail.com.br', 'reti@bol.com.br', 'quebs@ponto.com.br', 'boab@boa.com.br', 'sasa@gmail.com', 'dudu_online@ji.com.br', 'sa@ig.com.br'];\r",
+									"    const randomEmail = email[Math.floor(Math.random() * email.length)];\r",
+									"    return randomEmail;\r",
+									"}\r",
+									"pm.environment.set(\"mail\", randomUserEmail());\r",
+									"\r",
+									"function randomMatriz() {\r",
+									"    const names = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'];\r",
+									"    const randomName = names[Math.floor(Math.random() * names.length)];\r",
+									"    return randomName;\r",
+									"}\r",
+									"pm.environment.set(\"matriz\", randomMatriz());\r",
+									"const valorMatriz = pm.environment.get(\"matriz\");\r",
+									"pm.environment.set(\"state\", valorMatriz);\r",
+									"pm.environment.set(\"district\", valorMatriz);\r",
+									"\r",
+									"function randomResponsible() {\r",
+									"    const names = ['Peixes Arts', 'Ilha Peixes', 'Nina Veterinario', 'Nina Dogs', 'Nina dog', 'Cats Toys', 'Nina Festas', 'Compra sim', 'Company Nino', 'Ilha Company', 'Nina Arts', 'Ilha Loja', 'Nina Sassa', 'Compra Dogs', 'Dog Show', 'Cats Dogss', 'Nina Eletro', 'Compra Compra', 'Company Vendas', 'Dudu Company', 'Dudu Sasssa', 'Compras On', 'Salazar Company', 'IlhaRetiro Company', 'Lele Eletro', 'Compra Aki'];\r",
+									"    const randomName = names[Math.floor(Math.random() * names.length)];\r",
+									"    return randomName;\r",
+									"}\r",
+									"pm.environment.set(\"responsibleContact\", randomResponsible());\r",
+									"\r",
+									"function randomTelephone() {\r",
+									"    const number = ['875923416098127', '541096378251470', '902746513879205', '128579364021876', '630491725863941',\r",
+									"        '317865094273189', '764190328596472', '298637145082913', '450182796345087', '093628517490321',\r",
+									"        '981740526398147', '257491630852794', '609283741569032', '174509286371459', '326810947523680'];\r",
+									"    const randomNumber = number[Math.floor(Math.random() * number.length)]; // Correção: Usar number.length\r",
+									"    return randomNumber;\r",
+									"}\r",
+									"pm.environment.set(\"telephone\", randomTelephone());\r",
+									"\r",
+									"function randomService() {\r",
+									"    const names = ['Textil', 'Transportes', 'Manutencao', 'Contas', 'Vendas', 'Administrativo'];\r",
+									"    const randomName = names[Math.floor(Math.random() * names.length)];\r",
+									"    return randomName;\r",
+									"}\r",
+									"pm.environment.set(\"serviceDescription\", randomService());\r",
+									"\r",
+									"function randomZipCode() {\r",
+									"    const numbers = ['15973284', '86025917', '39186475', '72501839', '94638120',\r",
+									"        '27059381', '61830942', '40792586', '58264013', '03917258',\r",
+									"        '75308619', '91482705', '28659174', '63017952', '47195280'];\r",
+									"    const randomNumber = numbers[Math.floor(Math.random() * numbers.length)]; // Correção: Usar numbers.length\r",
+									"    return randomNumber;\r",
+									"}\r",
+									"pm.environment.set(\"zipCode\", randomZipCode()); // Correção: Chamar randomZipCode()\r",
+									"\r",
+									"pm.environment.set(\"complement\", 'Bloco A');\r",
+									"\r",
+									"function randomNumberForAddress() {\r",
+									"    const numbers = ['85296314', '14785236', '96321478', '25869314', '74185296', '36985214',\r",
+									"        '14725896', '85236914', '41785296', '96325874', '25896314', '74125896', '36985214', '14725896', '85236914'];\r",
+									"    const randomNumber = numbers[Math.floor(Math.random() * numbers.length)]; // Correção: Usar numbers.length\r",
+									"    return randomNumber;\r",
+									"}\r",
+									"pm.environment.set(\"number\", randomNumberForAddress());\r",
+									"\r",
+									"function randomCountry() {\r",
+									"    const names = ['Brasil', 'Argentina', 'Canadá', 'Japão', 'Austrália', 'Alemanha', 'Índia', 'Egito', 'México', 'França', 'China', 'Itália', 'Espanha'];\r",
+									"    const randomName = names[Math.floor(Math.random() * names.length)];\r",
+									"    return randomName;\r",
+									"}\r",
+									"pm.environment.set(\"country\", randomCountry()); // Correção: Chamar randomCountry()\r",
+									"\r",
+									"\r",
+									"function randomStreet() {\r",
+									"    const names = ['Avenida Brasil', 'Rua Argentina', 'Rua Canadá', 'Rua Japão', 'Rua Austrália', 'Rua Alemanha', 'Rua Índia', 'Rua Egito', 'Rua México', 'Avenida França', 'Rua China', 'Avenida África do Sul', 'Avenida Itália', 'Avenida Estados Unidos', 'Avenida Espanha'];\r",
+									"    const randomName = names[Math.floor(Math.random() * names.length)];\r",
+									"    return randomName;\r",
+									"}\r",
+									"pm.environment.set(\"street\", randomStreet());\r",
+									"\r",
+									"function randomCity() {\r",
+									"    const names = ['São Paulo','Rio de Janeiro','Salvador','Brasília','Fortaleza',\r",
+									"'Belo Horizonte','Curitiba','Manaus','Recife','Porto Alegre'];\r",
+									"    const randomName = names[Math.floor(Math.random() * names.length)];\r",
+									"    return randomName;\r",
+									"}\r",
+									"pm.environment.set(\"city\", randomCity());\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"mensagem de status\",function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"pm.test(\"Json's body validation\", function(){\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(Object.keys(responseJson)).to.not.be.empty;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENADM}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"corporateName\":\"{{corporateName}}\",\r\n  \"registerCompany\":\"{{registerCompany}}\",\r\n  \"mail\":\"{{mail}}\",\r\n  \"matriz\":\"{{matriz}}\",\r\n  \"responsibleContact\":\"{{responsibleContact}}\",\r\n  \"telephone\":\"{{telephone}}\",\r\n  \"serviceDescription\":\"{{serviceDescription}}\",\r\n  \"address\": [\r\n    {\r\n      \"zipCode\":\"{{zipCode}}\",\r\n      \"city\":\"{{city}}\",\r\n      \"state\":\"{{state}}\",\r\n      \"district\":\"{{district}}\",\r\n      \"street\":\"{{street}}\",\r\n      \"number\":\"{{number}}\",\r\n      \"complement\":\"{{complement}}\",\r\n      \"country\":\"{{country}}\"\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/company",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"company"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"TOKENADM\", pm.response.json().token);\r",
+									"\r",
+									"pm.test(\"Status test\", function () { pm.response.to.have.status(200)});\r",
+									"\r",
+									"pm.test(\"Check token is true\", function () {\r",
+									"   pm.expect(pm.response.json().token).to.exist;\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Sucess message validation\", function () {\r",
+									"    pm.expect(pm.response.json().msg).to.include(\"autenticação autorizada com sucesso!\");\r",
+									"  });\r",
+									"\r",
+									"  const capturarValorJson = pm.response.json().token;\r",
+									"pm.environment.set(\"TOKENADM\",capturarValorJson);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"mail\": \"sysadmin@qacoders.com\",\r\n  \"password\": \"1234@Test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/login",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar empresas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status validation\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENADM}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/company",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"company"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Contagem de empresas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status validation\",function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Cheking if response body is not empty\", function(){\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(Object.keys(responseJson)).to.not.be.empty;\r",
+									"})\r",
+									"pm.test(\"Response Time validation less than to 2 seconds that means 2000 ms\", function (){\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENADM}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/company/count",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"company",
+								"count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Validar tempo de resposta menor que 2 segundos ao contar empresas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status validation\",function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const empresas = (pm.response.json().count);\r",
+									"console.log(empresas);\r",
+									"\r",
+									"if (empresas < 1000){\r",
+									"    pm.test(\"Response Time validation less than to 2 seconds\", function (){\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"    });\r",
+									"};\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENADM}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/company/count",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"company",
+								"count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Não criar empresa, campo não deve ter mais que 100 caracteres",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Criar CNPJ randonicamente\r",
+									"function randomCNPJ() {\r",
+									"    let randomCNPJ = '';\r",
+									"   \r",
+									"    for (let i = 0; i < 14; i++) {\r",
+									"        randomCNPJ += Math.floor(Math.random() * 10).toString();\r",
+									"    }\r",
+									"    return randomCNPJ;\r",
+									"}\r",
+									"pm.environment.set(\"registerCompany\", randomCNPJ());\r",
+									"/*\r",
+									"function randomCorporateName(){\r",
+									"    const names = ['Salazar Company KO','Ilha do Retiro Company','Vai quebrar ponto com','Compra Aki ponto com'];\r",
+									"    const randomName = names[Math.floor(Math.random()*names.length)]\r",
+									"    return randomName;\r",
+									"}\r",
+									"pm.environment.set(\"corporateName\",randomCorporateName());\r",
+									"\r",
+									"*/"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Creation message validation\",function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"pm.test(\"Json's body validation\", function(){\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(Object.keys(responseJson)).to.not.be.empty;\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENADM}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"corporateName\": \"AAA24aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\r\n  \"registerCompany\": \"{{registerCompany}}\",\r\n  \"mail\": \"{{mail}}\",\r\n  \"matriz\": \"{{matriz}}\",\r\n  \"responsibleContact\": \"{{responsibleContact}}\",\r\n  \"telephone\": \"{{telephone}}\",\r\n  \"serviceDescription\": \"{{serviceDescription}}\",\r\n  \"address\": [\r\n    {\r\n      \"zipCode\": \"{{zipCode}}\",\r\n      \"city\": \"{{city}}\",\r\n      \"state\": \"{{state}}\",\r\n      \"district\": \"{{district}}\",\r\n      \"street\": \"{{street}}\",\r\n      \"number\": \"{{number}}\",\r\n      \"complement\": \"{{complement}}\",\r\n      \"country\": \"{{country}}\"\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/company",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"company"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Não criar empresa sem o nome estar preenchido",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Criar CNPJ randonicamente\r",
+									"function randomCNPJ() {\r",
+									"    let randomCNPJ = '';\r",
+									"   \r",
+									"    for (let i = 0; i < 14; i++) {\r",
+									"        randomCNPJ += Math.floor(Math.random() * 10).toString();\r",
+									"    }\r",
+									"    return randomCNPJ;\r",
+									"}\r",
+									"pm.environment.set(\"registerCompany\", randomCNPJ());\r",
+									"\r",
+									"function randomCorporateName(){\r",
+									"    const names = ['Salazar Company KO','Ilha do Retiro Company','Vai quebrar ponto com','Compra Aki ponto com'];\r",
+									"    const randomName = names[Math.floor(Math.random()*names.length)]\r",
+									"    return randomName;\r",
+									"}\r",
+									"pm.environment.set(\"corporateName\",randomCorporateName());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Creation message validation\",function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"/*\r",
+									"pm.test(\"Message validation\", function(){\r",
+									"    pm.expect(pm.response.text()).to.include(\"ValidationError: corporateName: O campo 'corporateName' é obrigatório.\");\r",
+									"});\r",
+									"*/"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENADM}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"corporateName\": \"\",\r\n  \"registerCompany\": \"{{registerCompany}}\",\r\n  \"mail\": \"{{mail}}\",\r\n  \"matriz\": \"{{matriz}}\",\r\n  \"responsibleContact\": \"{{responsibleContact}}\",\r\n  \"telephone\": \"{{telephone}}\",\r\n  \"serviceDescription\": \"{{serviceDescription}}\",\r\n  \"address\": [\r\n    {\r\n      \"zipCode\": \"{{zipCode}}\",\r\n      \"city\": \"{{city}}\",\r\n      \"state\": \"{{state}}\",\r\n      \"district\": \"{{district}}\",\r\n      \"street\": \"{{street}}\",\r\n      \"number\": \"{{number}}\",\r\n      \"complement\": \"{{complement}}\",\r\n      \"country\": \"{{country}}\"\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/company",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"company"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Não criar empresa sem o CNPJ estar preenchido",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Criar CNPJ randonicamente\r",
+									"function randomCNPJ() {\r",
+									"    let randomCNPJ = '';\r",
+									"   \r",
+									"    for (let i = 0; i < 14; i++) {\r",
+									"        randomCNPJ += Math.floor(Math.random() * 10).toString();\r",
+									"    }\r",
+									"    return randomCNPJ;\r",
+									"}\r",
+									"pm.environment.set(\"registerCompany\", randomCNPJ());\r",
+									"\r",
+									"function randomCorporateName(){\r",
+									"    const names = ['Salazar Company KO','Ilha do Retiro Company','Vai quebrar ponto com','Compra Aki ponto com'];\r",
+									"    const randomName = names[Math.floor(Math.random()*names.length)]\r",
+									"    return randomName;\r",
+									"}\r",
+									"pm.environment.set(\"corporateName\",randomCorporateName());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Creation message validation\",function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"pm.test(\"Message validation\", function(){\r",
+									"    pm.expect(pm.response.text()).to.include(\"O campo 'CNPJ' da empresa é obrigatório.\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENADM}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"corporateName\": \"{{corporateName}}\",\r\n  \"registerCompany\": \"\",\r\n  \"mail\": \"{{mail}}\",\r\n  \"matriz\": \"{{matriz}}\",\r\n  \"responsibleContact\": \"{{responsibleContact}}\",\r\n  \"telephone\": \"{{telephone}}\",\r\n  \"serviceDescription\": \"{{serviceDescription}}\",\r\n  \"address\": [\r\n    {\r\n      \"zipCode\": \"{{zipCode}}\",\r\n      \"city\": \"{{city}}\",\r\n      \"state\": \"{{state}}\",\r\n      \"district\": \"{{district}}\",\r\n      \"street\": \"{{street}}\",\r\n      \"number\": \"{{number}}\",\r\n      \"complement\": \"{{complement}}\",\r\n      \"country\": \"{{country}}\"\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/company",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"company"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Não criar empresa com CNPJ duplicado",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Criar CNPJ randonicamente\r",
+									"function randomCNPJ() {\r",
+									"    let randomCNPJ = '';\r",
+									"   \r",
+									"    for (let i = 0; i < 14; i++) {\r",
+									"        randomCNPJ += Math.floor(Math.random() * 10).toString();\r",
+									"    }\r",
+									"    return randomCNPJ;\r",
+									"}\r",
+									"pm.environment.set(\"registerCompany\", randomCNPJ());\r",
+									"\r",
+									"function randomCorporateName(){\r",
+									"    const names = ['Salazar Company KO','Ilha do Retiro Company','Vai quebrar ponto com','Compra Aki ponto com'];\r",
+									"    const randomName = names[Math.floor(Math.random()*names.length)]\r",
+									"    return randomName;\r",
+									"}\r",
+									"pm.environment.set(\"corporateName\",randomCorporateName());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Creation message validation\",function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENADM}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"corporateName\": \"{{corporateName}}\",\r\n  \"registerCompany\": \"12345678812345\",\r\n  \"mail\": \"{{mail}}\",\r\n  \"matriz\": \"{{matriz}}\",\r\n  \"responsibleContact\": \"{{responsibleContact}}\",\r\n  \"telephone\": \"{{telephone}}\",\r\n  \"serviceDescription\": \"{{serviceDescription}}\",\r\n  \"address\": [\r\n    {\r\n      \"zipCode\": \"{{zipCode}}\",\r\n      \"city\": \"{{city}}\",\r\n      \"state\": \"{{state}}\",\r\n      \"district\": \"{{district}}\",\r\n      \"street\": \"{{street}}\",\r\n      \"number\": \"{{number}}\",\r\n      \"complement\": \"{{complement}}\",\r\n      \"country\": \"{{country}}\"\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/company",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"company"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Não criar empresa ao usar letras ou caracteres especiais no campo CNPJ",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Criar CNPJ randonicamente\r",
+									"function randomCNPJ() {\r",
+									"    let randomCNPJ = '';\r",
+									"   \r",
+									"    for (let i = 0; i < 14; i++) {\r",
+									"        randomCNPJ += Math.floor(Math.random() * 10).toString();\r",
+									"    }\r",
+									"    return randomCNPJ;\r",
+									"}\r",
+									"pm.environment.set(\"registerCompany\", randomCNPJ());\r",
+									"\r",
+									"function randomCorporateName(){\r",
+									"    const names = ['Salazar Company KO','Ilha do Retiro Company','Vai quebrar ponto com','Compra Aki ponto com'];\r",
+									"    const randomName = names[Math.floor(Math.random()*names.length)]\r",
+									"    return randomName;\r",
+									"}\r",
+									"pm.environment.set(\"corporateName\",randomCorporateName());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Creation message validation\",function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"pm.test(\"Message validation\", function(){\r",
+									"    pm.expect(pm.response.text()).to.include(\"O campo 'CNPJ' da empresa deve ter no máximo 14 caracteres numéricos.\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENADM}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"corporateName\": \"{{corporateName}}\",\r\n  \"registerCompany\": \"123456788123\",\r\n  \"mail\": \"{{mail}}\",\r\n  \"matriz\": \"{{matriz}}\",\r\n  \"responsibleContact\": \"{{responsibleContact}}\",\r\n  \"telephone\": \"{{telephone}}\",\r\n  \"serviceDescription\": \"{{serviceDescription}}\",\r\n  \"address\": [\r\n    {\r\n      \"zipCode\": \"{{zipCode}}\",\r\n      \"city\": \"{{city}}\",\r\n      \"state\": \"{{state}}\",\r\n      \"district\": \"{{district}}\",\r\n      \"street\": \"{{street}}\",\r\n      \"number\": \"{{number}}\",\r\n      \"complement\": \"{{complement}}\",\r\n      \"country\": \"{{country}}\"\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/company",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"company"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Não criar empresa sem campo telefone estar preenchido",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Criar CNPJ randonicamente\r",
+									"function randomCNPJ() {\r",
+									"    let randomCNPJ = '';\r",
+									"   \r",
+									"    for (let i = 0; i < 14; i++) {\r",
+									"        randomCNPJ += Math.floor(Math.random() * 10).toString();\r",
+									"    }\r",
+									"    return randomCNPJ;\r",
+									"}\r",
+									"pm.environment.set(\"registerCompany\", randomCNPJ());\r",
+									"\r",
+									"function randomCorporateName(){\r",
+									"    const names = ['Salazar Company KO','Ilha do Retiro Company','Vai quebrar ponto com','Compra Aki ponto com'];\r",
+									"    const randomName = names[Math.floor(Math.random()*names.length)]\r",
+									"    return randomName;\r",
+									"}\r",
+									"pm.environment.set(\"corporateName\",randomCorporateName());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status message validation\",function() {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Messagem validation\", function (){\r",
+									"    pm.expect(pm.response.text()).to.include(\"O campo 'Telefone' é obrigatório.\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENADM}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"corporateName\": \"{{corporateName}}\",\r\n  \"registerCompany\": \"{{registerCompany}}\",\r\n  \"mail\": \"{{mail}}\",\r\n  \"matriz\": \"{{matriz}}\",\r\n  \"responsibleContact\": \"{{responsibleContact}}\",\r\n  \"telephone\": \"\",\r\n  \"serviceDescription\": \"{{serviceDescription}}\",\r\n  \"address\": [\r\n    {\r\n      \"zipCode\": \"{{zipCode}}\",\r\n      \"city\": \"{{city}}\",\r\n      \"state\": \"{{state}}\",\r\n      \"district\": \"{{district}}\",\r\n      \"street\": \"{{street}}\",\r\n      \"number\": \"{{number}}\",\r\n      \"complement\": \"{{complement}}\",\r\n      \"country\": \"{{country}}\"\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/company",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"company"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar empresa especifica",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENADM}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/company/679abc49e270333a9a039421",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"company",
+								"679abc49e270333a9a039421"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Editar endereço",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status message validation\", function(){\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"pm.test(\"Message validation\",function (){\r",
+									"    pm.expect(pm.response.json().msg).to.be.eql(\"Endereço da companhia atualizado com sucesso.\")\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{TOKENADM}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"address\": [\r\n    {\r\n      \"zipCode\": \"04777001\",\r\n      \"city\": \"São Paulo\",\r\n      \"state\": \"SP\",\r\n      \"district\": \"Rua das Flores\",\r\n      \"street\": \"Avenida Interlagos\",\r\n      \"number\": \"50\",\r\n      \"complement\": \"de 4503 ao fim - lado ímpar\",\r\n      \"country\": \"Brasil\"\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/company/address/679abc49e270333a9a039421",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"company",
+								"address",
+								"679abc49e270333a9a039421"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "tq13token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzQ4ZjZiMTQyNzgxZWMwY2U0NWY1ZTgiLCJmdWxsTmFtZSI6IlFhLUNvZGVycy1TWVNBRE1JTiIsIm1haWwiOiJzeXNhZG1pbkBxYWNvZGVycy5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCQ1WHVqUDYvOVkvREJncFdERGQ0SEMubUl1YkliVFFGLkNtYm9Gd29lU3E2UC53OWkuaGwxNiIsImFjY2Vzc1Byb2ZpbGUiOiJTWVNBRE1JTiIsImNwZiI6IjExMTExMTExMTExIiwic3RhdHVzIjp0cnVlLCJhdWRpdCI6W3sicmVnaXN0ZXJlZEJ5Ijp7InVzZXJJZCI6IjExMTExMTExMTExMTExMTExMSIsInVzZXJMb2dpbiI6InN5c2FkbWluQHFhY29kZXJzLmNvbSJ9LCJyZWdpc3RyYXRpb25EYXRlIjoicXVpbnRhLWZlaXJhLCAyOC8xMS8yMDI0LCAyMDowMzoxMyBCUlQiLCJyZWdpc3RyYXRpb25OdW1iZXIiOiIwMSIsImNvbXBhbnlJZCI6IlFhLkNvZGVycyIsIl9pZCI6IjY3NDhmNmIxNDI3ODFlYzBjZTQ1ZjVlOSJ9XSwiX192IjowLCJpYXQiOjE3MzgwMjgzMjUsImV4cCI6MTczODExNDcyNX0.BLNGNXCY3RNvsfztfHamCGeSt_o8cqVctLR_Gpuu4Ec",
+			"type": "default"
+		},
+		{
+			"key": "tq13token_usuario",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2Nzk4MzcxZmUyNzAzMzNhOWEwMzhmNWEiLCJmdWxsTmFtZSI6IlJvZHJpZ28gQ2FicmFsIiwibWFpbCI6InJvZHJpZ29AdGVzdC5jb20uYnIiLCJwYXNzd29yZCI6IiQyYiQxMCQwY3FYVzUvdzYueEkwOE1iZTQuNXguY2Y0Njc3UEdTeGdrSFViRjNpb0Z6cGM2Qk1UdC9DLiIsImFjY2Vzc1Byb2ZpbGUiOiJBRE1JTiIsImNwZiI6IjMzMzA0NzIzMzQ0Iiwic3RhdHVzIjp0cnVlLCJhdWRpdCI6W3sicmVnaXN0ZXJlZEJ5Ijp7InVzZXJJZCI6IjY3NDhmNmIxNDI3ODFlYzBjZTQ1ZjVlOCIsInVzZXJMb2dpbiI6InN5c2FkbWluQHFhY29kZXJzLmNvbSJ9LCJyZWdpc3RyYXRpb25EYXRlIjoic2VndW5kYS1mZWlyYSwgMjcvMDEvMjAyNSwgMjI6NDc6MTAgQlJUIiwicmVnaXN0cmF0aW9uTnVtYmVyIjoiUWFDb2RlcnMtNCIsIl9pZCI6IjY3OTgzNzFmZTI3MDMzM2E5YTAzOGY1YiJ9XSwiX192IjowLCJpYXQiOjE3MzgxMDQ1NjIsImV4cCI6MTczODE5MDk2Mn0.BaowDyhE8-lqecp1SbMZ7-reSaDV-ekDh0Mqe0ZWgvQ",
+			"type": "default"
+		}
+	]
+}
