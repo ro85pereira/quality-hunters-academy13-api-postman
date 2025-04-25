@@ -6,6 +6,13 @@ Bem-vindo ao **Projeto de Automação** da Qa.Coders Academy T-13! 🎉
 
 Este projeto consiste em uma **coleção de testes de API** desenvolvidos utilizando o **Postman**. O objetivo é fornecer um ambiente prático e eficiente para os alunos do **QA.Coders** testarem as funcionalidades da API do curso da Academy. 🔍
 
+Este repositório contém:
+- Uma coleção de testes Postman (`TQA13-QualityHunters.postman_collection.json`)
+- Um ambiente Postman configurado (`TQA13.postman_environment.json`)
+- Workflow de CI/CD para execução automática dos testes (`.github/workflows/main.yml`)
+
+O objetivo é facilitar a validação das APIs do projeto, tanto manualmente pelo Postman quanto de forma automatizada via linha de comando (Newman) e CI/CD.
+
 ## ⚙️ Especificações
 
 - **API alvo**: Os testes são realizados na API da aplicação web **QA.Coders**.
@@ -37,10 +44,33 @@ Antes de executar os testes, certifique-se de que você tem os seguintes requisi
 - Selecione o arquivo TQA13.postman_environment dentro da pasta do repositório clonado.
 5. Selecione a variável de ambiente importada na barra lateral do Postman.
 6. Execute a coleção de testes:
-- Clique no botão "Runner" no canto superior esquerdo do Postman.
-- Selecione a coleção "TQA13-QualityHunters".
-- Clique em "Start Run" e aguarde a execução dos testes.
-7. Visualize os resultados dos testes na aba "Test Results" do Postman.
+- Selecione a coleção "TQA13-QualityHunters" e depois no botão "Run" no canto superior direito da tela.
+- Na nova aba chamada "Runner", clique em " Run TQA13-QualityHunters no botão inferior do lado direito da tela" e aguarde a execução dos testes.
+7. Será aberta uma nova aba chamada "TQA13-QualityHunters- Run results", nela visualize os resultados dos testes.
+
+## 🔄 Integração Contínua (CI/CD)
+
+- O projeto possui um workflow configurado em `.github/workflows/main.yml`.
+- A cada push ou pull request, os testes são executados automaticamente via GitHub Actions.
+- O status da execução pode ser acompanhado na aba **Actions** do repositório no GitHub.
+
+---
+
+## 📁 Estrutura do Projeto
+
+```
+quality-hunters-academy13-api-postman/
+├── .github/workflows/main.yml         # Workflow de CI/CD
+├── README.md                         # Documentação do projeto
+├── TQA13-QualityHunters.postman_collection.json  # Coleção de testes Postman
+├── TQA13.postman_environment.json    # Ambiente Postman
+```
+
+## 🤝 Contribuição
+
+- Sinta-se à vontade para abrir issues ou pull requests com sugestões, melhorias ou correções.
+- Mantenha a padronização dos arquivos e atualize o README se necessário.
+  
 
 ## 👥 Squad
 - Quality Hunters
